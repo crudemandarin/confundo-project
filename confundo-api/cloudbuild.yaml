@@ -1,0 +1,16 @@
+steps:
+- name: node
+  entrypoint: npm
+  args: ['install']
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/confundo-capstone/confundo-api', '.']
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/confundo-capstone/confundo-api']
+# Deploy container image to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: ['run', 'deploy', 'confundo-api', '--image', 'gcr.io/confundo-capstone/confundo-api', '--region', 'us-central1']
+images:
+- gcr.io/confundo-capstone/confundo-api
